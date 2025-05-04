@@ -11,12 +11,15 @@ from typing import List, Literal, NamedTuple, Optional
 
 import torch
 import nodes
+import os
 
 import comfy.model_management
 from comfy_execution.graph import get_input_info, ExecutionList, DynamicPrompt, ExecutionBlocker
 from comfy_execution.graph_utils import is_link, GraphBuilder
 from comfy_execution.caching import HierarchicalCache, LRUCache, DependencyAwareCache, CacheKeySetInputSignature, CacheKeySetID
 from comfy_execution.validation import validate_node_input
+
+DEBUG_TIME = os.getenv("DEBUG_COMFYUI_TIME", "False").lower() in ("1", "true", "yes")
 
 class ExecutionResult(Enum):
     SUCCESS = 0
@@ -520,7 +523,14 @@ class PromptExecutor:
                     self.handle_execution_error(prompt_id, dynamic_prompt.original_prompt, current_outputs, executed, error, ex)
                     break
 
+                start_time = time.time()
                 result, error, ex = execute(self.server, dynamic_prompt, self.caches, node_id, extra_data, executed, prompt_id, execution_list, pending_subgraph_results)
+                if DEBUG_TIME:
+                    elapsed_time = time.time() - start_time  # считаем время выполнения
+                    node_info = dynamic_prompt.get_node(node_id)
+                    node_type = node_info['class_type']
+                    print(f"[NodeTimer] {node_type} ({node_id}) executed in {elapsed_time:.3f} sec")
+
                 self.success = result != ExecutionResult.FAILURE
                 if result == ExecutionResult.FAILURE:
                     self.handle_execution_error(prompt_id, dynamic_prompt.original_prompt, current_outputs, executed, error, ex)
