@@ -1,5 +1,4 @@
-﻿
-FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04 AS system
+﻿FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04 AS system
 
 # Prevents prompts from packages asking for user input during installation
 ENV DEBIAN_FRONTEND=noninteractive
