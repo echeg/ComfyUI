@@ -1,0 +1,10 @@
+﻿ARG MODEL_FILE
+ARG VERSION
+
+# Stage 1: big model image
+ARG VERSION
+ARG BASE_IMAGE=echeg/default-flux1-dev-base:${VERSION}
+FROM ${BASE_IMAGE} AS base
+
+COPY models/diffusion_models/${MODEL_FILE} /comfyui/models/diffusion_models/${MODEL_FILE}
+RUN test -s /comfyui/models/diffusion_models/${MODEL_FILE}

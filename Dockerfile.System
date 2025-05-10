@@ -1,0 +1,46 @@
+﻿
+FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04 AS system
+
+# Prevents prompts from packages asking for user input during installation
+ENV DEBIAN_FRONTEND=noninteractive
+# Prefer binary wheels over source distributions for faster pip installations
+ENV PIP_PREFER_BINARY=1
+# Ensures output from python is printed immediately to the terminal without buffering
+ENV PYTHONUNBUFFERED=1
+# Speed up some cmake builds
+ENV CMAKE_BUILD_PARALLEL_LEVEL=8
+
+# Устанавливаем системные пакеты, Python 3.11 и pip, настраиваем альтернативы
+RUN apt-get update && apt-get install -y \
+        git wget python3.11 \
+        libglib2.0-0 libsm6 libgl1 libxrender1 libxext6 \
+    && wget https://bootstrap.pypa.io/get-pip.py \
+    && python3.11 get-pip.py \
+    && rm get-pip.py \
+    && update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1 \
+    && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1 \
+    && update-alternatives --install /usr/bin/pip pip /usr/local/bin/pip 1 \
+    && update-alternatives --install /usr/bin/pip3 pip3 /usr/local/bin/pip 1 \
+    && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+# Устанавливаем все зависимости через pip в один слой
+RUN pip install --no-cache-dir \
+        comfy-cli \
+        runpod \
+        requests \
+        paddlepaddle \
+        paddleocr
+
+RUN /usr/bin/yes | comfy --workspace /comfyui install --version 0.3.29 --cuda-version 12.6 --nvidia
+
+RUN pip uninstall -y onnxruntime \ 
+    && pip install --no-cache-dir onnxruntime-gpu==1.21.1
+
+WORKDIR /comfyui
+
+# Копируем необходимые файлы
+ADD src/extra_model_paths.yaml ./
+WORKDIR /
+
+ADD src/start.sh src/rp_handler.py test_input.json src/model_manager.py src/download_default_models_for_nodes.sh ./
+RUN chmod +x /start.sh
