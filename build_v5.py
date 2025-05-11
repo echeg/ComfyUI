@@ -10,7 +10,6 @@ MODELS = [
     "flux1-fill-dev.safetensors",
 ]
 
-# Шаги сборки после системного образа: (имя Dockerfile, суффикс для тега)
 STEPS = [
     ("Dockerfile.BaseModel", "base"),
     ("Dockerfile.Nodes",     "nodes"),
