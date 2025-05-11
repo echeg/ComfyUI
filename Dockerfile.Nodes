@@ -287,3 +287,6 @@ RUN cd /comfyui/custom_nodes && \
     cd ComfyUI-Inspyrenet-Rembg && \
     git checkout 87ac452ef1182e8f35f59b04010158d74dcefd06 && \
     if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
+
+RUN pip uninstall -y onnxruntime \
+    && pip install --no-cache-dir onnxruntime-gpu==1.21.1

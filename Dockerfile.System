@@ -32,9 +32,6 @@ RUN pip install --no-cache-dir \
 
 RUN /usr/bin/yes | comfy --workspace /comfyui install --version 0.3.29 --cuda-version 12.6 --nvidia
 
-RUN pip uninstall -y onnxruntime \ 
-    && pip install --no-cache-dir onnxruntime-gpu==1.21.1
-
 WORKDIR /comfyui
 
 # Копируем необходимые файлы
