@@ -1,0 +1,53 @@
+
+Please register RunPod from this link : https://runpod.io?ref=1aka98lq
+
+RunPod permanent network storage tutorial : https://youtu.be/8Qf4x3-DFf4
+
+When deploying a Pod select min 24 GB GPU like RTX 3090 but 4090 should work way faster with 24 GB config
+
+You can also select L40S and get amazing speed and max quality
+
+Select below template which you can also install SwarmUI and use on same Pod
+
+SwarmUI tutorial : https://youtu.be/bupRePUOA18
+
+RunPod Pytorch 2.2.0
+runpod/pytorch:2.2.0-py3.10-cuda12.1.1-devel-ubuntu22.04
+
+Set volume disk like 200 GB - depending on your tasks 
+
+Make the container disk space 30 GB - this is important
+
+Upload all files into workspace
+
+Start a new terminal
+
+Copy paste below command and it will install and start Kohya SS GUI for FLUX with newest drivers and libraries
+
+chmod +x RunPod_Kohya_FLUX_Installer_part1.sh
+./RunPod_Kohya_FLUX_Installer_part1.sh
+
+Wait until you see local URL like Running on local URL:  http://127.0.0.1:7860
+
+After that OPEN A NEW TERMINAL and execute below one and it will update libraries and start FLUX version of Kohya with best libraries and best speed
+
+chmod +x RunPod_Kohya_FLUX_Installer_part2.sh
+./RunPod_Kohya_FLUX_Installer_part2.sh
+
+The rest of the usage is same as other previous tutorials
+
+Also you can execute below commands to download all necessary models quickly into workspace
+
+You can download them while installing with a new terminal window
+
+Open a new terminal
+
+pip install huggingface_hub
+pip install ipywidgets
+pip install hf_transfer
+export HF_HUB_ENABLE_HF_TRANSFER=1
+python Download_Train_Models.py --dir /workspace
+
+Then you can set their paths on GUI check Example Full Setup.jpg
+
+In RunPod don't forget /workspace "/" in beginning
