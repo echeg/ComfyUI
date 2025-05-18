@@ -9,6 +9,15 @@ echo ">>> [post_start] Checking for mounted volume..."
 VOLUME_PATH=${VOLUME_PATH:-"/workspace/volume"}
 echo ">>> [post_start] Using volume path: $VOLUME_PATH"
 
+# Патчим train_config.json in-place
+CONFIG_PATH="/workspace/train_config.json"
+if [ -f "$CONFIG_PATH" ]; then
+  sed -i "s#/workspace/volume#${VOLUME_PATH//\//\/}#g" "$CONFIG_PATH"
+  echo ">>> [post_start] train_config.json пропатчен in-place ($CONFIG_PATH)"
+else
+  echo ">>> [post_start] WARNING: $CONFIG_PATH не найден, патч не выполнен."
+fi
+
 MODEL_DIR="$VOLUME_PATH/fluxtrain"
 mkdir -p "$MODEL_DIR"
 
